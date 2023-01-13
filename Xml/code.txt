@@ -1,0 +1,44 @@
+<Products xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Product>
+		<Action>add</Action>
+		<Statuses>
+			<Status>
+				<Type>base</Type>
+				<Value>2</Value>
+			</Status>
+		</Statuses>
+		<Sku>MATTE174009</Sku>
+		<Name> Skirt model 174009 Top Secret </Name>
+		<Unit>db</Unit>
+		<Categories>
+			<Category>
+				<Id>678123</Id>
+				<Name>Termékek|Alkategória 1</Name>
+				<Type>alt</Type>
+			</Category>
+		</Categories>
+		<Prices>
+			<Price>
+				<Type>normal</Type>
+				<Net>6401.9</Net>
+				<Gross>6401.9</Gross>
+			</Price>
+		</Prices>
+		<Images>
+			<Image>
+				<Type>base</Type>
+				<Filename>ImgTest1</Filename>
+				<Import>
+					<Url>http://matterhorn-wholesale.com/db_images/custom900x1200_961228.jpg</Url>
+				</Import>
+			</Image>
+			<Image>
+				<Type>alt</Type>
+				<Filename>ImgTest2</Filename>
+				<Import>
+					<Url>http://matterhorn-wholesale.com/db_images/custom900x1200_961229.jpg</Url>
+				</Import>
+			</Image>
+		</Images>
+	</Product>
+</Products>

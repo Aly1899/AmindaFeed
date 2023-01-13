@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Products>
+    <Product>
+        <Action>add</Action>
+        <Statuses>
+            <Status>
+                <Type>base</Type>
+                <Value>2</Value>
+            </Status>
+        </Statuses>
+        <Sku>8fga1239029</Sku>
+        <Name>3lső termékem</Name>
+        <Unit>db</Unit>
+        <Categories>
+            <Category>
+                <Id>678123</Id>
+                <Name>Termékek|Alkategória 1</Name>
+                <Type>base</Type>
+            </Category>
+        </Categories>
+        <Prices>
+            <Price>
+                <Type>normal</Type>
+                <Net>1000</Net>
+                <Gross>1270</Gross>
+            </Price>
+        </Prices>
+        <Images>
+            <Image>
+                <Type>base</Type>
+                <Filename>ImgTest1</Filename>
+                <Import>
+                    <Url>http://matterhorn-wholesale.com/db_images/custom900x1200_962330.jpg
+                    </Url>
+                </Import>
+            </Image>
+            <Image>
+                <Type>alt</Type>
+                <Id>1</Id>
+                <Filename>ImgTest2</Filename>
+                <Import>
+                    <Url>http://matterhorn-wholesale.com/db_images/custom900x1200_962331.jpg
+                    </Url>
+                </Import>
+            </Image>
+        </Images>
+    </Product>
+</Products>
