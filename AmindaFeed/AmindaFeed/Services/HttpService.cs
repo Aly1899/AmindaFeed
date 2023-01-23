@@ -5,6 +5,12 @@ using System.Net.Http;
 using System.Text;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Net;
+using Microsoft.AspNetCore.Hosting.Server;
+using System;
+using AmindaFeed.Constants;
+using System.Transactions;
+using DeepL;
 
 namespace AmindaFeed.Services
 {
@@ -53,7 +59,7 @@ namespace AmindaFeed.Services
         public async Task SetAmindaProductFromMatterhorn(string productId)
         {
             var product = await GetMatterhornProduct(productId);
-            var amindaProd = MatterhornAmindaMapper(product);
+            var amindaProd = await MatterhornAmindaMapper(product);
 
             //string xmlAmindaProduct = MySerializer<AmindaProducts>.Serialize(amindaProd);
             var settings = new XmlWriterSettings
@@ -152,12 +158,30 @@ namespace AmindaFeed.Services
 
         }
 
-        private AmindaProducts MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
+        private async Task<AmindaProducts> MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
         {
+            var name = matterhornProduct.Name.Replace(matterhornProduct.Id.ToString(), matterhornProduct.Color).Replace("model","");
             var images = new List<Image>();
             var isImageFirst = true;
+            var baseFolderPathToSave = "D:/Personal/Aminda/Termékek/Beszerzés/Matterhorn/";
+            var imagePathToSave = "";
             foreach (var image in matterhornProduct.Images)
             {
+                imagePathToSave = baseFolderPathToSave + $"{matterhornProduct.Name}/{name}.jpg";
+                if (!Directory.Exists($"{baseFolderPathToSave}/{matterhornProduct.Name}"))
+                {
+                    Directory.CreateDirectory($"{baseFolderPathToSave}/{matterhornProduct.Name}");
+                }
+
+                //var httpClient = _httpClientFactory.CreateClient();
+                //byte[] fileBytes = await httpClient.GetByteArrayAsync(image);
+                //File.WriteAllBytes(imagePathToSave, fileBytes);
+
+
+                //using (WebClient client = new WebClient())
+                //{
+                //    client.DownloadFile(new Uri(image), imagePathToSave);
+                //}
                 images.Add(
                     new Image()
                     {
@@ -186,6 +210,13 @@ namespace AmindaFeed.Services
                     Type = "text",
                     Name = "google_product_category",
                     Value = "2271"
+                },
+                new Param()
+                {
+                    Id = 2928445,
+                    Type = "enum",
+                    Name = "Várható szállítás",
+                    Value = "8-10 munkanap"
                 }
             };
 
@@ -226,7 +257,7 @@ namespace AmindaFeed.Services
             }
 
             var brand = "MATTERHORN";
-            AmindaProducts amindaProd = new AmindaProducts()
+            AmindaProducts amindaProd = new()
             {
                 Products = new List<Product>()
                 {
@@ -241,8 +272,16 @@ namespace AmindaFeed.Services
                                 Value = 2
                             }
                         },
+                        Export = new Export()
+                        {
+                            Status = 0
+                        },
                         Sku = $"{brand.Substring(0,11-matterhornProduct.Id.ToString().Length)}{matterhornProduct.Id}",
-                        Name = matterhornProduct.Name.Split('(')[0],
+                        Name = name,
+                        Description = new Description()
+                        {
+                            Short =await Translate( matterhornProduct.Description)
+                        },
                         Unit = "db",
                         Categories = new Categories()
                         {
@@ -258,8 +297,8 @@ namespace AmindaFeed.Services
                             Price = new Price()
                             {
                                 Type = "normal",
-                                Gross = (matterhornProduct.Prices["HUF"])*2,
-                                Net = (matterhornProduct.Prices["HUF"])*2
+                                Gross = SalePriceCalculation(matterhornProduct.Prices["HUF"]),
+                                Net = SalePriceCalculation(matterhornProduct.Prices["HUF"])
                             }
                         },
                         Images = new Images()
@@ -291,6 +330,42 @@ namespace AmindaFeed.Services
             };
 
             return amindaProd;            
+        }
+
+        private double SalePriceCalculation(double purchasePrice)
+        {
+            double salePrice;
+            if (purchasePrice < ProductConstants.PriceLimitForDeliveryFee)
+            {
+                salePrice = (Math.Floor(purchasePrice * 2 / 1000)) * 1000 + 2990;
+            } else
+            {
+                salePrice = (Math.Floor(purchasePrice * 2 / 1000)) * 1000 + 990;
+
+            }
+            return salePrice;
+        }
+
+        private async Task<string> Translate(string text)
+        {
+            Translation translation = null;
+            using (DeepLClient client = new DeepLClient("8eec9c3d-166f-bf9e-c11a-7e5c433fc387:fx", useFreeApi: true))
+            {
+                try
+                {
+                    translation = await client.TranslateAsync(
+                        text,
+                        Language.Hungarian
+                    );
+                    Console.WriteLine(translation.DetectedSourceLanguage);
+                    Console.WriteLine(translation.Text);
+                }
+                catch (DeepLException exception)
+                {
+                    Console.WriteLine($"An error occurred: {exception.Message}");
+                }
+            }
+            return translation!=null ? translation.Text : "";
         }
     }
 }

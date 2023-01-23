@@ -87,6 +87,14 @@ public class Import
     public string Url { get; set; }
 }
 
+[XmlRoot(ElementName = "Export")]
+public class Export
+{
+
+    [XmlElement(ElementName = "Status")]
+    public int Status { get; set; }
+}
+
 [XmlRoot(ElementName = "Image")]
 public class Image
 {
@@ -194,6 +202,14 @@ public class AmindaStockVariants
     public string AmindaStockVariant { get; set; }
 }
 
+[XmlRoot(ElementName = "Description")]
+public class Description
+{
+
+    [XmlElement(ElementName = "Short")]
+    public string Short { get; set; }
+}
+
 
 
 [XmlRoot(ElementName = "Product")]
@@ -212,6 +228,9 @@ public class Product
     [XmlElement(ElementName = "Name")]
     public string Name { get; set; }
 
+    [XmlElement(ElementName = "Description")]
+    public Description Description { get; set; }
+
     [XmlElement(ElementName = "Unit")]
     public string Unit { get; set; }
 
@@ -223,6 +242,9 @@ public class Product
 
     [XmlElement(ElementName = "Images")]
     public Images Images { get; set; }
+
+    [XmlElement(ElementName = "Export")]
+    public Export Export { get; set; }
 
     [XmlElement(ElementName = "Params")]
     public Parameters Params { get; set; }
