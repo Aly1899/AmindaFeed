@@ -7,5 +7,6 @@ namespace AmindaFeed.Services
         Task<MatterhornProduct> GetMatterhornProduct(string productId);
         Task<List<MatterhornProduct>> GetMatterhornProducts(List<string> productIds);
         Task SetAmindaProductFromMatterhorn(string productId);
+        void SetAmindaProductsFromMatterhorn(List<string> productIds);
     }
 }

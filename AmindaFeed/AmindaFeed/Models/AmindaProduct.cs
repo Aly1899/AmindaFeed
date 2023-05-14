@@ -158,7 +158,7 @@ public class AmindaVariant
     [XmlElement(ElementName = "Name")]
     public string Name { get; set; }
     [XmlElement(ElementName = "Values")]
-    public Values Values { get; set; }
+    public Values? Values { get; set; }
 }
 
 
@@ -227,7 +227,7 @@ public class Product
 
     [XmlElement(ElementName = "Name")]
     public string Name { get; set; }
-
+    
     [XmlElement(ElementName = "Description")]
     public Description Description { get; set; }
 

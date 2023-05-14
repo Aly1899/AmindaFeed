@@ -35,35 +35,31 @@ namespace AmindaFeed.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [HttpGet(Name = "GetMatterhornProduct")]
+        [HttpGet("GetMatterhornProduct")]
         public async Task<MatterhornProduct> GetAmindaProduct(string productId)
         {
             return await _httpService.GetMatterhornProduct(productId);
             
         }
 
-        [HttpPost(Name = "SetAmindaProductFromMatterhorn")]
+        [HttpPut("GetMatterhornProducts")]
+        public async Task<List<MatterhornProduct>> GetAmindaProducts([FromBody] List<string> productIds)
+        {
+            return await _httpService.GetMatterhornProducts(productIds);
+
+        }
+
+        [HttpPost("SetAmindaProductFromMatterhorn")]
         public async Task SetAmindaProductFromMatterhorn(string productId)
         {
-            _httpService.SetAmindaProductFromMatterhorn(productId);
+            await _httpService.SetAmindaProductFromMatterhorn(productId);
         }
 
-    }
-
-    
-    public class MySerializer<T> where T : class
-    {
-        public static string Serialize(T obj)
+        [HttpPost("SetAmindaProductsFromMatterhorn")]
+        public void SetAmindaProductsFromMatterhorn([FromBody] List<string> productIds)
         {
-            XmlSerializer xsSubmit = new XmlSerializer(typeof(T));
-            using (var sww = new StringWriter())
-            {
-                using (XmlTextWriter writer = new XmlTextWriter(sww) { Formatting = Formatting.Indented })
-                {
-                    xsSubmit.Serialize(writer, obj);
-                    return sww.ToString();
-                }
-            }
+            _httpService.SetAmindaProductsFromMatterhorn(productIds);
         }
+
     }
 }
