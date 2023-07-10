@@ -1,6 +1,7 @@
 ﻿namespace AmindaFeed.Services
 {
-    public class MatterhornAdapter
+    public class MatterhornAdapters
     {
+
     }
 }
