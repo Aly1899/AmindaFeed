@@ -1,11 +1,18 @@
 using AmindaFeed.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureAppConfiguration((hostingContext, config) =>
+    {
+        config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+    })
+    .Build();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
