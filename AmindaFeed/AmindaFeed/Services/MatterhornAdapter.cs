@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace AmindaFeed.Services
 {
-    public class MatterhornAdapter
+    public class MatterhornAdapter : IMatterhornAdapter
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
@@ -27,12 +27,12 @@ namespace AmindaFeed.Services
 
             var httpRequestMessage = new HttpRequestMessage(
                 HttpMethod.Get,
-                $@"{_configuration.GetValue<string>("Matternhorn:BaseUrl")}/{productId}")
+                $@"{_configuration.GetValue<string>("Matterhorn:BaseUrl")}/{productId}")
             {
                 Headers =
                     {
                         { HeaderNames.Accept, "application/json" },
-                        { HeaderNames.Authorization, _configuration.GetValue<string>("Matternhorn:ApiKey") }
+                        { HeaderNames.Authorization, _configuration.GetValue<string>("Matterhorn:ApiKey") }
                     }
             };
 
@@ -99,7 +99,7 @@ namespace AmindaFeed.Services
             var name = matterhornProduct.Name.Replace(matterhornProduct.Id.ToString(), matterhornProduct.Color).Replace("model", "");
             var images = new List<Image>();
             var isImageFirst = true;
-            var baseFolderPathToSave = "D:\\Personal\\Aminda\\Termékek\\Beszerzés\\Matterhorn\\";
+            var baseFolderPathToSave = _configuration.GetValue<string>("Matterhorn:PathToSaveConti");
 
             var pathToSave = baseFolderPathToSave + $"{matterhornProduct.Name.Trim()}";
             if (!Directory.Exists(pathToSave))
@@ -107,6 +107,7 @@ namespace AmindaFeed.Services
                 Directory.CreateDirectory(pathToSave);
             }
             SaveImageFromUrl(matterhornProduct.Images, pathToSave);
+
             foreach (var image in matterhornProduct.Images)
             {
 
@@ -284,10 +285,10 @@ namespace AmindaFeed.Services
             return salePrice;
         }
 
-        private static async Task<string> Translate(string text)
+        private async Task<string> Translate(string text)
         {
             Translation translation = null;
-            using (DeepLClient client = new DeepLClient("8eec9c3d-166f-bf9e-c11a-7e5c433fc387:fx", useFreeApi: true))
+            using (DeepLClient client = new DeepLClient(_configuration.GetValue<string>("DeepL:ApiKey"), useFreeApi: true))
             {
                 try
                 {
@@ -306,49 +307,49 @@ namespace AmindaFeed.Services
             return translation != null ? translation.Text : "";
         }
 
-        private static async Task SaveImageFromUrl(List<string> urls, string savePath)
+        private async Task SaveImageFromUrl(List<string> urls, string savePath)
         {
-            using (var client = new HttpClient())
+            //using (var client = new HttpClient())
+            //{
+            foreach (string url in urls)
             {
-                foreach (string url in urls)
+                try
                 {
-                    try
-                    {
-                        // Get the filename from the URL and combine it with the save directory path
-                        string filename = Path.GetFileName(url);
-                        string filePath = Path.Combine(savePath, filename);
+                    // Get the filename from the URL and combine it with the save directory path
+                    string filename = Path.GetFileName(url);
+                    string filePath = Path.Combine(savePath, filename);
 
-                        // Download the image and save it to disk
-                        var response = await client.GetAsync(url);
-                        using (var content = response.Content)
+                    // Download the image and save it to disk
+                    var response = await _httpClient.GetAsync(url);
+                    using (var content = response.Content)
+                    {
+                        using (var stream = await content.ReadAsStreamAsync())
                         {
-                            using (var stream = await content.ReadAsStreamAsync())
+                            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                             {
-                                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                                {
-                                    await stream.CopyToAsync(fileStream);
-                                }
+                                await stream.CopyToAsync(fileStream);
                             }
                         }
+                    }
 
-                        Console.WriteLine("Saved image {0} to {1}", filename, filePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error saving image {0}: {1}", url, ex.Message);
-                    }
+                    Console.WriteLine("Saved image {0} to {1}", filename, filePath);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error saving image {0}: {1}", url, ex.Message);
                 }
             }
+            //}
 
             Console.WriteLine("All images saved!");
             Console.ReadLine();
         }
 
-        private static async Task<string> GetAmindaToken(HttpClient httpClient)
+        private async Task<string> GetAmindaToken(HttpClient httpClient)
         {
             var login = new Params()
             {
-                ApiKey = "82dd476ee053ff7778397bf6155969eeca084a70"
+                ApiKey = _configuration.GetValue<string>("Unas:ApiKey")
             };
 
             var settings = new XmlWriterSettings
@@ -367,7 +368,7 @@ namespace AmindaFeed.Services
 
             Console.WriteLine(output);
 
-            var loginUrl = "https://api.unas.eu/shop/login";
+            var loginUrl = $"{_configuration.GetValue<string>("Unas:BaseUrl")}/login";
 
 
 
