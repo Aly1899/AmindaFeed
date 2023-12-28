@@ -1,12 +1,12 @@
 ﻿using System.Text;
-using System.Xml.Serialization;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace AmindaFeed.Extensions
 {
     public static class amindaProdExtension
     {
-        public static string ToXmlString(this AmindaProducts amindaProd)
+        public static string ToXmlString(this AmindaProduct amindaProd)
         {
             var settings = new XmlWriterSettings
             {

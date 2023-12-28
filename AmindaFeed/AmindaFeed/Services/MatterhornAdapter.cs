@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace AmindaFeed.Services
 {
-    public class MatterhornAdapter : IMatterhornAdapter
+    public class MatterhornAdapter : IMatterhornAdapter, IThirdPartyProduct
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
@@ -94,7 +94,7 @@ namespace AmindaFeed.Services
             });
         }
 
-        private async Task<AmindaProducts> MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
+        private async Task<AmindaProduct> MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
         {
             var name = matterhornProduct.Name.Replace(matterhornProduct.Id.ToString(), matterhornProduct.Color).Replace("model", "");
             var images = new List<Image>();
@@ -195,78 +195,71 @@ namespace AmindaFeed.Services
             }
 
             var brand = "MATTERHORN";
-            AmindaProducts amindaProd = new()
+
+
+            AmindaProduct amindaProd = new()
             {
-                Products = new List<Product>()
+                Action = "add",
+                Statuses = new Statuses()
                 {
-                    new Product()
+                    Status = new Status()
                     {
-                        Action = "add",
-                        Statuses = new Statuses()
-                        {
-                            Status = new Status()
-                            {
-                                Type = "base",
-                                Value = 2
-                            }
-                        },
-                        Export = new Export()
-                        {
-                            Status = 0
-                        },
-                        Sku = $"{brand.Substring(0,11-matterhornProduct.Id.ToString().Length)}{matterhornProduct.Id}",
-                        Name = name,
-                        Description = new Description()
-                        {
-                            Short =await Translate( matterhornProduct.Description)
-                        },
-                        Unit = "db",
-                        Categories = new Categories()
-                        {
-                            Category = new Category()
-                            {
-                                Id = 678123,
-                                Name = "Termékek|Alkategória 1",
-                                Type = "base"
-                            }
-                        },
-                        Prices = new Prices()
-                        {
-                            Price = new Price()
-                            {
-                                Type = "normal",
-                                Gross = SalePriceCalculation(matterhornProduct.Prices["HUF"]),
-                                Net = SalePriceCalculation(matterhornProduct.Prices["HUF"])
-                            }
-                        },
-                        Images = new Images()
-                        {
-                            Image = images
-                        },
-                        Params = new Parameters()
-                        {
-                            Param = parameters
-                        },
-                        AmindaVariants = new AmindaVariants()
-                        {
-                            AmindaVariant = variants
-                        },
-                        Stocks = new Stocks()
-                        {
-                            Status= new Status()
-                            {
-                                Active = 1,
-                                Empty = 0,
-                                Variant = 1
-                            },
-                            Stock = stocks
-                        }
-
-
+                        Type = "base",
+                        Value = 2
                     }
+                },
+                Export = new Export()
+                {
+                    Status = 0
+                },
+                Sku = $"{brand.Substring(0, 11 - matterhornProduct.Id.ToString().Length)}{matterhornProduct.Id}",
+                Name = name,
+                Description = new Description()
+                {
+                    Short = await Translate(matterhornProduct.Description)
+                },
+                Unit = "db",
+                Categories = new Categories()
+                {
+                    Category = new Category()
+                    {
+                        Id = 678123,
+                        Name = "Termékek|Alkategória 1",
+                        Type = "base"
+                    }
+                },
+                Prices = new Prices()
+                {
+                    Price = new Price()
+                    {
+                        Type = "normal",
+                        Gross = SalePriceCalculation(matterhornProduct.Prices["HUF"]),
+                        Net = SalePriceCalculation(matterhornProduct.Prices["HUF"])
+                    }
+                },
+                Images = new Images()
+                {
+                    Image = images
+                },
+                Params = new Parameters()
+                {
+                    Param = parameters
+                },
+                AmindaVariants = new AmindaVariants()
+                {
+                    AmindaVariant = variants
+                },
+                Stocks = new Stocks()
+                {
+                    Status = new Status()
+                    {
+                        Active = 1,
+                        Empty = 0,
+                        Variant = 1
+                    },
+                    Stock = stocks
                 }
             };
-
             return amindaProd;
         }
 
@@ -408,6 +401,12 @@ namespace AmindaFeed.Services
             Console.WriteLine($"login response token: {loginResponse.Token}");
 
             return loginResponse.Token;
+        }
+
+        public async Task<AmindaProduct> ProductMappedToAminda(string productID)
+        {
+            MatterhornProduct matterhornProduct = await GetMatterhornProduct(productID);
+            return await MatterhornAmindaMapper(matterhornProduct);
         }
     }
 }

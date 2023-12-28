@@ -1,17 +1,12 @@
-﻿using AmindaFeed.Models;
+﻿using AmindaFeed.Constants;
+using AmindaFeed.Extensions;
+using AmindaFeed.Models;
+using DeepL;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http.Headers;
-using System.Net.Http;
 using System.Text;
-using System.Xml.Serialization;
 using System.Xml;
-using System.Net;
-using Microsoft.AspNetCore.Hosting.Server;
-using System;
-using AmindaFeed.Constants;
-using System.Transactions;
-using DeepL;
-using AmindaFeed.Extensions;
+using System.Xml.Serialization;
 
 namespace AmindaFeed.Services
 {
@@ -26,7 +21,7 @@ namespace AmindaFeed.Services
         public async Task<MatterhornProduct> GetMatterhornProduct(string productId)
         {
             MatterhornProduct res = new();
-            
+
             var httpRequestMessage = new HttpRequestMessage(
             HttpMethod.Get,
             $"https://matterhorn-wholesale.com/B2BAPI/ITEMS/{productId}")
@@ -54,7 +49,7 @@ namespace AmindaFeed.Services
 
         public async Task<List<MatterhornProduct>> GetMatterhornProducts(List<string> productIds)
         {
-            var matterhornProducts= new List<MatterhornProduct>();
+            var matterhornProducts = new List<MatterhornProduct>();
 
             foreach (var productId in productIds)
             {
@@ -99,9 +94,9 @@ namespace AmindaFeed.Services
             });
         }
 
-        private async Task<AmindaProducts> MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
+        private async Task<AmindaProduct> MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
         {
-            var name = matterhornProduct.Name.Replace(matterhornProduct.Id.ToString(), matterhornProduct.Color).Replace("model","");
+            var name = matterhornProduct.Name.Replace(matterhornProduct.Id.ToString(), matterhornProduct.Color).Replace("model", "");
             var images = new List<Image>();
             var isImageFirst = true;
             var baseFolderPathToSave = "D:\\Personal\\Aminda\\Termékek\\Beszerzés\\Matterhorn\\";
@@ -165,7 +160,7 @@ namespace AmindaFeed.Services
             var variants = new List<AmindaVariant>();
             var values = new List<Value>();
 
-            foreach(var value in matterhornProduct.Variants)
+            foreach (var value in matterhornProduct.Variants)
             {
                 values.Add(
                     new Value()
@@ -185,7 +180,7 @@ namespace AmindaFeed.Services
                 });
 
             var stocks = new List<Stock>();
-            foreach(var stock in matterhornProduct.Variants)
+            foreach (var stock in matterhornProduct.Variants)
             {
                 stocks.Add(
                     new Stock()
@@ -199,79 +194,71 @@ namespace AmindaFeed.Services
             }
 
             var brand = "MATTERHORN";
-            AmindaProducts amindaProd = new()
+            AmindaProduct amindaProd = new()
             {
-                Products = new List<Product>()
+                Action = "add",
+                Statuses = new Statuses()
                 {
-                    new Product()
+                    Status = new Status()
                     {
-                        Action = "add",
-                        Statuses = new Statuses()
-                        {
-                            Status = new Status()
-                            {
-                                Type = "base",
-                                Value = 2
-                            }
-                        },
-                        Export = new Export()
-                        {
-                            Status = 0
-                        },
-                        Sku = $"{brand.Substring(0,11-matterhornProduct.Id.ToString().Length)}{matterhornProduct.Id}",
-                        Name = name,
-                        Description = new Description()
-                        {
-                            Short =await Translate( matterhornProduct.Description)
-                        },
-                        Unit = "db",
-                        Categories = new Categories()
-                        {
-                            Category = new Category()
-                            {
-                                Id = 678123,
-                                Name = "Termékek|Alkategória 1",
-                                Type = "base"
-                            }
-                        },
-                        Prices = new Prices()
-                        {
-                            Price = new Price()
-                            {
-                                Type = "normal",
-                                Gross = SalePriceCalculation(matterhornProduct.Prices["HUF"]),
-                                Net = SalePriceCalculation(matterhornProduct.Prices["HUF"])
-                            }
-                        },
-                        Images = new Images()
-                        {
-                            Image = images
-                        },
-                        Params = new Parameters()
-                        {
-                            Param = parameters
-                        },
-                        AmindaVariants = new AmindaVariants()
-                        {
-                            AmindaVariant = variants
-                        },
-                        Stocks = new Stocks()
-                        {
-                            Status= new Status()
-                            {
-                                Active = 1,
-                                Empty = 0,
-                                Variant = 1
-                            },
-                            Stock = stocks
-                        }
-                        
-                        
+                        Type = "base",
+                        Value = 2
                     }
+                },
+                Export = new Export()
+                {
+                    Status = 0
+                },
+                Sku = $"{brand.Substring(0, 11 - matterhornProduct.Id.ToString().Length)}{matterhornProduct.Id}",
+                Name = name,
+                Description = new Description()
+                {
+                    Short = await Translate(matterhornProduct.Description)
+                },
+                Unit = "db",
+                Categories = new Categories()
+                {
+                    Category = new Category()
+                    {
+                        Id = 678123,
+                        Name = "Termékek|Alkategória 1",
+                        Type = "base"
+                    }
+                },
+                Prices = new Prices()
+                {
+                    Price = new Price()
+                    {
+                        Type = "normal",
+                        Gross = SalePriceCalculation(matterhornProduct.Prices["HUF"]),
+                        Net = SalePriceCalculation(matterhornProduct.Prices["HUF"])
+                    }
+                },
+                Images = new Images()
+                {
+                    Image = images
+                },
+                Params = new Parameters()
+                {
+                    Param = parameters
+                },
+                AmindaVariants = new AmindaVariants()
+                {
+                    AmindaVariant = variants
+                },
+                Stocks = new Stocks()
+                {
+                    Status = new Status()
+                    {
+                        Active = 1,
+                        Empty = 0,
+                        Variant = 1
+                    },
+                    Stock = stocks
                 }
             };
 
-            return amindaProd;            
+            return amindaProd;
         }
 
         private static double SalePriceCalculation(double purchasePrice)
@@ -280,7 +267,8 @@ namespace AmindaFeed.Services
             if (purchasePrice < ProductConstants.PriceLimitForDeliveryFee)
             {
                 salePrice = (Math.Floor(purchasePrice * 2 / 1000)) * 1000 + 2990;
-            } else
+            }
+            else
             {
                 salePrice = (Math.Floor(purchasePrice * 2 / 1000)) * 1000 + 990;
 
@@ -307,10 +295,10 @@ namespace AmindaFeed.Services
                     Console.WriteLine($"An error occurred: {exception.Message}");
                 }
             }
-            return translation!=null ? translation.Text : "";
+            return translation != null ? translation.Text : "";
         }
 
-        private static  async Task SaveImageFromUrl(List<string> urls,string savePath)
+        private static async Task SaveImageFromUrl(List<string> urls, string savePath)
         {
             using (var client = new HttpClient())
             {
@@ -373,7 +361,7 @@ namespace AmindaFeed.Services
 
             var loginUrl = "https://api.unas.eu/shop/login";
 
-            
+
 
             HttpRequestMessage httpLoginRequestMessage = new HttpRequestMessage
             {

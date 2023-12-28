@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpService, HttpService>();
+builder.Services.AddSingleton<IMatterhornAdapter, MatterhornAdapter>();
 
 var app = builder.Build();
 

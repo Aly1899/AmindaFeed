@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 [XmlRoot(ElementName = "Status")]
 public class Status
@@ -212,8 +211,8 @@ public class Description
 
 
 
-[XmlRoot(ElementName = "Product")]
-public class Product
+[XmlRoot(ElementName = "AmindaProduct")]
+public class AmindaProduct
 {
 
     [XmlElement(ElementName = "Action")]
@@ -227,7 +226,7 @@ public class Product
 
     [XmlElement(ElementName = "Name")]
     public string Name { get; set; }
-    
+
     [XmlElement(ElementName = "Description")]
     public Description Description { get; set; }
 
@@ -261,6 +260,6 @@ public class Product
 public class AmindaProducts
 {
 
-    [XmlElement(ElementName = "Product")]
-    public List<Product> Products { get; set; }
+    [XmlElement(ElementName = "AmindaProduct")]
+    public List<AmindaProduct> Products { get; set; }
 }

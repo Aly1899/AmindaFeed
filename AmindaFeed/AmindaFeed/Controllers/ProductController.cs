@@ -1,17 +1,6 @@
 using AmindaFeed.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Xml.Serialization;
-using System.Xml;
-using Formatting = System.Xml.Formatting;
-using System.Text;
-using System.Net.Http;
-using System.Net;
-using System;
 using AmindaFeed.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AmindaFeed.Controllers
 {
@@ -21,31 +10,32 @@ namespace AmindaFeed.Controllers
     {
         private readonly ILogger<ProductController> _logger;
         private readonly IHttpService _httpService;
+        private readonly IMatterhornAdapter _matterhornAdapter;
         private readonly IHttpClientFactory _httpClientFactory;
 
 
         public ProductController(
             ILogger<ProductController> logger,
             IHttpService httpService,
-            IHttpClientFactory httpClientFactory
-            )
+            IHttpClientFactory httpClientFactory, IMatterhornAdapter matterhornAdapter)
         {
             _logger = logger;
             _httpService = httpService;
             _httpClientFactory = httpClientFactory;
+            _matterhornAdapter = matterhornAdapter;
         }
 
         [HttpGet("GetMatterhornProduct")]
         public async Task<MatterhornProduct> GetAmindaProduct(string productId)
         {
-            return await _httpService.GetMatterhornProduct(productId);
-            
+            return await _matterhornAdapter.GetMatterhornProduct(productId);
+
         }
 
         [HttpPut("GetMatterhornProducts")]
         public async Task<List<MatterhornProduct>> GetAmindaProducts([FromBody] List<string> productIds)
         {
-            return await _httpService.GetMatterhornProducts(productIds);
+            return await _matterhornAdapter.GetMatterhornProducts(productIds);
 
         }
 
