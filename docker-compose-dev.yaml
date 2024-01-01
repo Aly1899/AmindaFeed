@@ -1,0 +1,47 @@
+version: "2.1"
+
+services:
+  aminda-feed-postgres:
+    image: aminda-feed-postgres
+    container_name: aminda-feed-postgres
+    ports:
+      - 5432:5432
+    restart: on-failure
+    build: ./env/PostgreSQL
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./env/PostgreSQL/init.sql:/docker-entrypoint-initdb.d/init.sql
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "100m"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    networks:
+      - aminda-feed-network
+
+  aminda-feed-pgadmin:
+    image: aminda-feed-pgadmin
+    container_name: aminda-feed-pgadmin
+    restart: on-failure
+    build: ./env/pgAdmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      aminda-feed-postgres:
+        condition: service_healthy
+    ports:
+      - 5050:80
+    networks:
+      - aminda-feed-network
+
+networks:
+  aminda-feed-network:
+    name: aminda-feed-network
