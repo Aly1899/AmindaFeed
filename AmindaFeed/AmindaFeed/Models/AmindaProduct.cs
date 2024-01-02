@@ -212,7 +212,7 @@ public class Description
 
 
 
-[XmlRoot(ElementName = "AmindaProduct")]
+[XmlRoot(ElementName = "Product")]
 public class AmindaProduct
 {
 
@@ -261,6 +261,6 @@ public class AmindaProduct
 public class AmindaProducts
 {
 
-    [XmlElement(ElementName = "AmindaProduct")]
+    [XmlElement(ElementName = "Product")]
     public List<AmindaProduct> Products { get; set; }
 }

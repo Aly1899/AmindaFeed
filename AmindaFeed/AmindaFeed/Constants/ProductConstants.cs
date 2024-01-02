@@ -3,9 +3,9 @@
     static class ProductConstants
     {
         public const double PriceLimitForDeliveryFee = 8000;
-        public static Dictionary<string, List<string>> Categories = new()
+        public static Dictionary<string, int> Categories = new()
         {
-            {"Women`s Blouses, Tunics", new() {"Felsők & Pólók","607781" } }
+            {"Women`s Blouses, Tunics", 607781 } 
         };
     }
 }

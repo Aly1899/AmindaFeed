@@ -65,7 +65,10 @@ namespace AmindaFeed.Services
         {
             var product = await GetMatterhornProduct(productId);
             var amindaProd = await MatterhornAmindaMapper(product);
-
+            var amindaProds = new AmindaProducts()
+            {
+                Products=new List<AmindaProduct>() { amindaProd }
+            };
             var url = $"{_configuration.GetValue<string>("Unas:BaseUrl")}/setProduct";
 
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage
@@ -75,9 +78,10 @@ namespace AmindaFeed.Services
             };
             httpRequestMessage.Headers.Add("Accept", "application/xml");
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetAmindaToken(_httpClient));
-            httpRequestMessage.Content = new StringContent(amindaProd.ToXmlString(), Encoding.UTF8, "application/xml");
+            var xmlStr = amindaProds.ToXmlString();
+            httpRequestMessage.Content = new StringContent(amindaProds.ToXmlString(), Encoding.UTF8, "application/xml");
 
-            Console.WriteLine($"aminda product xml : {amindaProd.ToXmlString()}");
+            Console.WriteLine($"aminda product xml : {amindaProds.ToXmlString()}");
 
             await _httpClient.SendAsync(httpRequestMessage)
                 .ContinueWith(responseTask =>
@@ -195,9 +199,6 @@ namespace AmindaFeed.Services
             }
 
             var brand = "MATTERHORN";
-            string category = $"Női divat|{ProductConstants.Categories[matterhornProduct.CategoryName][0]}";
-            byte[] bytes = Encoding.Default.GetBytes(category);
-            string categoryUTF8 = Encoding.UTF8.GetString(bytes);
 
             AmindaProduct amindaProd = new()
             {
@@ -225,8 +226,7 @@ namespace AmindaFeed.Services
                 {
                     Category = new Category()
                     {
-                        Id = int.Parse(ProductConstants.Categories[matterhornProduct.CategoryName][1]),
-                        Name = categoryUTF8,
+                        Id = 311612,
                         Type = "base"
                     }
                 },
@@ -362,7 +362,7 @@ namespace AmindaFeed.Services
 
             x.Serialize(xmlWriter, login);
 
-            Console.WriteLine(output);
+            Console.WriteLine("----Token-----: ",output);
 
             var loginUrl = $"{_configuration.GetValue<string>("Unas:BaseUrl")}/login";
 

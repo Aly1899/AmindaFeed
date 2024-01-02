@@ -6,7 +6,7 @@ namespace AmindaFeed.Extensions
 {
     public static class amindaProdExtension
     {
-        public static string ToXmlString(this AmindaProduct amindaProd)
+        public static string ToXmlString(this AmindaProducts amindaProds)
         {
             var settings = new XmlWriterSettings
             {
@@ -14,12 +14,12 @@ namespace AmindaFeed.Extensions
                 OmitXmlDeclaration = true
             };
 
-            XmlSerializer amindaSerialization = new XmlSerializer(amindaProd.GetType());
+            XmlSerializer amindaSerialization = new XmlSerializer(amindaProds.GetType());
             StringBuilder xmlAmindaProduct = new StringBuilder();
             var amindaWriter = new StringWriter(xmlAmindaProduct);
             var xmlAmindaWriter = XmlWriter.Create(amindaWriter, settings);
 
-            amindaSerialization.Serialize(xmlAmindaWriter, amindaProd);
+            amindaSerialization.Serialize(xmlAmindaWriter, amindaProds);
 
 
             Console.WriteLine($"xmlAminda {xmlAmindaProduct}");

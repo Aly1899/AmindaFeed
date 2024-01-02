@@ -63,6 +63,10 @@ namespace AmindaFeed.Services
         {
             var product = await GetMatterhornProduct(productId);
             var amindaProd = await MatterhornAmindaMapper(product);
+            var amindaProds = new AmindaProducts()
+            {
+                Products = new List<AmindaProduct>() { amindaProd }
+            };
 
             var httpClient = _httpClientFactory.CreateClient();
 
@@ -75,9 +79,9 @@ namespace AmindaFeed.Services
             };
             httpRequestMessage.Headers.Add("Accept", "application/xml");
             httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", await GetAmindaToken(httpClient));
-            httpRequestMessage.Content = new StringContent(amindaProd.ToXmlString(), Encoding.UTF8, "application/xml");
+            httpRequestMessage.Content = new StringContent(amindaProds.ToXmlString(), Encoding.UTF8, "application/xml");
 
-            Console.WriteLine($"aminda product xml : {amindaProd.ToXmlString()}");
+            Console.WriteLine($"aminda product xml : {amindaProds.ToXmlString()}");
 
             await httpClient.SendAsync(httpRequestMessage)
                   .ContinueWith(responseTask =>
@@ -221,7 +225,7 @@ namespace AmindaFeed.Services
                     Category = new Category()
                     {
                         Id = 678123,
-                        Name = "Termékek|Alkategória 1",
+                        //Name = "Termékek|Alkategória 1",
                         Type = "base"
                     }
                 },
