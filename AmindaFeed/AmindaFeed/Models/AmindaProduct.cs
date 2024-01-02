@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using System.Text;
+using System.Xml.Serialization;
 
 [XmlRoot(ElementName = "Status")]
 public class Status
@@ -41,7 +42,7 @@ public class Category
     [XmlElement(ElementName = "Id")]
     public int Id { get; set; }
 
-    [XmlElement(ElementName = "Name")]
+    [XmlElement(ElementName = "Name", DataType = "string", IsNullable = true, Type = typeof(string))]
     public string Name { get; set; }
 
     [XmlElement(ElementName = "Type")]

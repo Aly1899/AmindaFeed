@@ -195,7 +195,9 @@ namespace AmindaFeed.Services
             }
 
             var brand = "MATTERHORN";
-
+            string category = $"Női divat|{ProductConstants.Categories[matterhornProduct.CategoryName][0]}";
+            byte[] bytes = Encoding.Default.GetBytes(category);
+            string categoryUTF8 = Encoding.UTF8.GetString(bytes);
 
             AmindaProduct amindaProd = new()
             {
@@ -223,8 +225,8 @@ namespace AmindaFeed.Services
                 {
                     Category = new Category()
                     {
-                        Id = 678123,
-                        Name = "Termékek|Alkategória 1",
+                        Id = int.Parse(ProductConstants.Categories[matterhornProduct.CategoryName][1]),
+                        Name = categoryUTF8,
                         Type = "base"
                     }
                 },
@@ -260,6 +262,7 @@ namespace AmindaFeed.Services
                     Stock = stocks
                 }
             };
+            Console.WriteLine(amindaProd);
             return amindaProd;
         }
 

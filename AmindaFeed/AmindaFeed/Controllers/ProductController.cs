@@ -42,13 +42,13 @@ namespace AmindaFeed.Controllers
         [HttpPost("SetAmindaProductFromMatterhorn")]
         public async Task SetAmindaProductFromMatterhorn(string productId)
         {
-            await _httpService.SetAmindaProductFromMatterhorn(productId);
+            await _matterhornAdapter.SetAmindaProductFromMatterhorn(productId);
         }
 
         [HttpPost("SetAmindaProductsFromMatterhorn")]
         public void SetAmindaProductsFromMatterhorn([FromBody] List<string> productIds)
         {
-            _httpService.SetAmindaProductsFromMatterhorn(productIds);
+            _matterhornAdapter.SetAmindaProductsFromMatterhorn(productIds);
         }
 
     }
