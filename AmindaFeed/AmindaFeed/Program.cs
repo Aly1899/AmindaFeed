@@ -1,4 +1,7 @@
+using AmindaFeed.Data;
 using AmindaFeed.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 
 var builder = WebApplication.CreateBuilder(args);

@@ -5,7 +5,7 @@ services:
     image: aminda-feed-postgres
     container_name: aminda-feed-postgres
     ports:
-      - 5432:5432
+      - 5433:5432
     restart: on-failure
     build: ./env/PostgreSQL
     environment:
