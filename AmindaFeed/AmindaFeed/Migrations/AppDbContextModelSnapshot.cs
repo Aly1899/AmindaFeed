@@ -23,11 +23,8 @@ namespace AmindaFeed.Migrations
 
             modelBuilder.Entity("AmindaFeed.Data.AmindaProductDb", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<int>("Category")
                         .HasColumnType("integer");

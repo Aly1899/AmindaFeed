@@ -6,13 +6,19 @@ using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var configurationBuilder = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
 // Add services to the container.
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
-        config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+            config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
     })
     .Build();
+
+IConfiguration configuration = configurationBuilder.Build();
 
 builder.Services.AddControllers();
 
@@ -20,7 +26,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpService, HttpService>();
-builder.Services.AddSingleton<IMatterhornAdapter, MatterhornAdapter>();
+builder.Services.AddScoped<IMatterhornAdapter, MatterhornAdapter>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("PostgresSQL")));
 
 var app = builder.Build();
 

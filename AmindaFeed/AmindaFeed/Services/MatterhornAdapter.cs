@@ -1,4 +1,5 @@
 ﻿using AmindaFeed.Constants;
+using AmindaFeed.Data;
 using AmindaFeed.Extensions;
 using AmindaFeed.Models;
 using DeepL;
@@ -14,11 +15,13 @@ namespace AmindaFeed.Services
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
+        private readonly AppDbContext _dbContext;
 
-        public MatterhornAdapter(IConfiguration configuration, HttpClient httpClient)
+        public MatterhornAdapter(IConfiguration configuration, HttpClient httpClient, AppDbContext dbContext)
         {
             _configuration = configuration;
             _httpClient = httpClient;
+            _dbContext = dbContext;
         }
 
         public async Task<MatterhornProduct> GetMatterhornProduct(string productId)
@@ -226,7 +229,7 @@ namespace AmindaFeed.Services
                 {
                     Category = new Category()
                     {
-                        Id = 311612,
+                        Id = ProductConstants.Categories[matterhornProduct.CategoryName],
                         Type = "base"
                     }
                 },
@@ -263,7 +266,27 @@ namespace AmindaFeed.Services
                 }
             };
             Console.WriteLine(amindaProd);
+            await PersistAmindaProduct(amindaProd, matterhornProduct.Prices["HUF"]);
             return amindaProd;
+        }
+
+        private async Task PersistAmindaProduct (AmindaProduct amindaProduct, double purchasePrice)
+        {
+            var amindaProductDb = new AmindaProductDb();
+            amindaProductDb.Id = amindaProduct.Sku;
+            amindaProductDb.Name = amindaProduct.Name;
+            amindaProductDb.Category = amindaProduct.Categories.Category.Id;
+            amindaProductDb.SalePrice = amindaProduct.Prices.Price.Gross;
+            amindaProductDb.PurchasePrice = purchasePrice;
+            amindaProductDb.IsOutOfStock = false;
+
+            foreach (var variant in amindaProduct.Stocks.Stock)
+            {
+                if (variant.Qty<3) amindaProductDb.IsOutOfStock = true;
+            }
+
+            _dbContext.AmindaProductDb.Add(amindaProductDb);
+            await _dbContext.SaveChangesAsync();
         }
 
         private static double SalePriceCalculation(double purchasePrice)
