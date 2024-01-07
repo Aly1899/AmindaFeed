@@ -1,4 +1,5 @@
 using AmindaFeed.Data;
+using AmindaFeed.Repository;
 using AmindaFeed.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IHttpService, HttpService>();
 builder.Services.AddScoped<IMatterhornAdapter, MatterhornAdapter>();
+builder.Services.AddScoped(typeof(IProductRepository<>), typeof(ProductRepository<>));
 builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("PostgresSQL")));
 

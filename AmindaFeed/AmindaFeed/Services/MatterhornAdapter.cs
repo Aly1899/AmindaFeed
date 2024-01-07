@@ -2,6 +2,7 @@
 using AmindaFeed.Data;
 using AmindaFeed.Extensions;
 using AmindaFeed.Models;
+using AmindaFeed.Repository;
 using DeepL;
 using Microsoft.Net.Http.Headers;
 using System.Net.Http.Headers;
@@ -15,13 +16,16 @@ namespace AmindaFeed.Services
     {
         private readonly IConfiguration _configuration;
         private readonly HttpClient _httpClient;
-        private readonly AppDbContext _dbContext;
+        private readonly IProductRepository<AmindaProductDb> _productRepository;
 
-        public MatterhornAdapter(IConfiguration configuration, HttpClient httpClient, AppDbContext dbContext)
+        public MatterhornAdapter(
+            IConfiguration configuration, 
+            HttpClient httpClient,
+            IProductRepository<AmindaProductDb> productRepository)
         {
             _configuration = configuration;
             _httpClient = httpClient;
-            _dbContext = dbContext;
+            _productRepository = productRepository;
         }
 
         public async Task<MatterhornProduct> GetMatterhornProduct(string productId)
@@ -64,6 +68,40 @@ namespace AmindaFeed.Services
             return matterhornProducts;
         }
 
+        public async Task<List<MatterhornProduct>> GetMatterhornProductsByCategory(int category)
+        {
+            List<MatterhornProduct> matterhornProducts;
+
+            var httpRequestMessage = new HttpRequestMessage(
+                HttpMethod.Get,
+                $@"{_configuration.GetValue<string>("Matterhorn:BaseUrl")}/?category_id={category}")
+            {
+                Headers =
+                    {
+                        { HeaderNames.Accept, "application/json" },
+                        { HeaderNames.Authorization, _configuration.GetValue<string>("Matterhorn:ApiKey") }
+                    }
+            };
+
+            _httpClient.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
+
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                matterhornProducts = await httpResponseMessage.Content.ReadFromJsonAsync<List<MatterhornProduct>>() ??
+                                    throw new NullReferenceException($"No matterhorn category with id {category}");
+            }
+            else
+            {
+                matterhornProducts = new();
+            }
+
+            var result = matterhornProducts?.Where(p => p.Variants!= null && p.Variants.Count != 0).ToList();
+
+            return result; 
+        }
         public async Task SetAmindaProductFromMatterhorn(string productId)
         {
             var product = await GetMatterhornProduct(productId);
@@ -285,8 +323,7 @@ namespace AmindaFeed.Services
                 if (variant.Qty<3) amindaProductDb.IsOutOfStock = true;
             }
 
-            _dbContext.AmindaProductDb.Add(amindaProductDb);
-            await _dbContext.SaveChangesAsync();
+            await _productRepository.CreateAsync(amindaProductDb);
         }
 
         private static double SalePriceCalculation(double purchasePrice)
