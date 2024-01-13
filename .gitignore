@@ -475,3 +475,27 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+
+# Node.js
+node_modules/
+
+# Angular
+/dist/
+/tmp/
+/*.pug
+/*.scss
+/*.css
+/*.less
+/*.sass
+/*.styl
+/*.woff
+/*.woff2
+/*.ttf
+/*.eot
+/*.map
+
+# System
+.DS_Store
+Thumbs.db
