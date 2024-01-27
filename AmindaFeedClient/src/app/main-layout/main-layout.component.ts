@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {MenuModule} from "primeng/menu";
 import {CommonModule} from "@angular/common";
+import {ContentLayoutComponent} from "./content-layout/content-layout.component";
+import {SidebarComponent} from "./sidebar/sidebar.component";
 
 @Component({
   selector: 'app-main-layout',
@@ -9,45 +11,12 @@ import {CommonModule} from "@angular/common";
   imports: [
     MenuModule,
     CommonModule,
+    ContentLayoutComponent,
+    SidebarComponent,
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })
-export class MainLayoutComponent implements OnInit {
-  items: MenuItem[] | undefined;
+export class MainLayoutComponent {
 
-  ngOnInit() {
-    this.items = [
-      {
-        label: 'Wholesalers',
-        items: [
-          {
-            label: 'Matterhorn',
-            command: () => {
-              //navigate to matterhorn page
-            }
-          }
-        ]
-      },
-      {
-        label: 'Settings',
-        items: [
-          {
-            label: 'Setting1',
-            icon: 'pi pi-external-link',
-          },
-          {
-            label: 'Setting2',
-            icon: 'pi pi-upload',
-          }
-        ]
-      }
-    ];
-  }
-
-  update() {
-  }
-
-  delete() {
-  }
 }
