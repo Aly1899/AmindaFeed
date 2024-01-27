@@ -21,8 +21,8 @@ export class SidebarComponent implements OnInit {
         items: [
           {
             label: 'Matterhorn',
+            routerLink: '/matterhorn',
             command: () => {
-              //navigate to matterhorn page
             }
           }
         ]
