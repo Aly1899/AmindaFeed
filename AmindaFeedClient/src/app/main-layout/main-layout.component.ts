@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {MenuItem} from 'primeng/api';
 import {MenuModule} from "primeng/menu";
 import {CommonModule} from "@angular/common";
-import {ContentLayoutComponent} from "./content-layout/content-layout.component";
-import {SidebarComponent} from "./sidebar/sidebar.component";
+import {ContentLayoutComponent} from "../content-layout/content-layout.component";
+import {SidebarComponent} from "../sidebar/sidebar.component";
 
 @Component({
   selector: 'app-main-layout',
