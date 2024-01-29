@@ -1,9 +1,26 @@
 <p-tabView>
   <p-tabPanel header="Available Items">
-      <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-      </p>
+      @for (prod of matProducts; track $index) {
+        <div class="flex flex-row card">
+          <p-galleria [value]="prod.images" [(visible)]="displayBasic2" [containerStyle]="{'max-width': '850px'}" [numVisible]="7"
+          [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="false" [baseZIndex]="100000">
+          <ng-template pTemplate="item" let-item>
+              <img [src]="item.previewImageSrc" style="width: 100%; display: block;"/>
+          </ng-template>
+          <ng-template pTemplate="thumbnail" let-item>
+              <div class="grid grid-nogutter justify-content-center">
+                  <img [src]="item.thumbnailImageSrc" style="display: block;"/>
+              </div>
+          </ng-template>
+      </p-galleria>
+      <button pButton type="button" icon="pi pi-external-link" label="Show" (click)="displayBasic2 = true"></button>
+
+
+          <p-image src={{prod.images[0]}} alt="Image" width="50"></p-image>
+          <a class="flex" href={{prod.url}} target="_blank">{{prod.id}}</a>
+          <p class="flex-1 ">{{prod.name}}</p>
+        </div>
+      }
   </p-tabPanel>
   <p-tabPanel header="Uploaded To Aminda">
       <p>

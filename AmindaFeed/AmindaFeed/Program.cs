@@ -31,6 +31,15 @@ builder.Services.AddScoped<IMatterhornAdapter, MatterhornAdapter>();
 builder.Services.AddScoped(typeof(IProductRepository<>), typeof(ProductRepository<>));
 builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("PostgresSQL")));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AmindaAllowOrigins",
+                      builder =>
+                      {
+                          builder.WithOrigins("http://localhost:4200");
+                      });
+});
+
 
 var app = builder.Build();
 
@@ -42,6 +51,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AmindaAllowOrigins");
 
 app.UseAuthorization();
 
