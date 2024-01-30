@@ -1,26 +1,27 @@
 <p-tabView>
   <p-tabPanel header="Available Items">
+    <div class="flex flex-col gap-2">
       @for (prod of matProducts; track $index) {
-        <div class="flex flex-row card">
-          <p-galleria [value]="prod.images" [(visible)]="displayBasic2" [containerStyle]="{'max-width': '850px'}" [numVisible]="7"
-          [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="false" [baseZIndex]="100000">
+        <div class="flex drop-shadow-md gap-2 justify-content-center items-center align-content">
+          <p-image class="flex" src={{prod.images[0]}} alt="Image" width="50" (click)="onImageClick($index)"></p-image>
+          <a class="flex self-centered" href={{prod.url}} target="_blank">{{prod.id}}</a>
+          <p class="ml-2 flex-1 ">{{prod.name}}</p>
+          
+          <!-- <p-galleria [value]="galeryImages" [(visible)]="displayBasic2" [containerStyle]="{'max-width': '850px'}" [numVisible]="7"
+          [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="true" [baseZIndex]="100000">
           <ng-template pTemplate="item" let-item>
-              <img [src]="item.previewImageSrc" style="width: 100%; display: block;"/>
-          </ng-template>
+              <img [src]="item" style="width: 300px; display: block;"/>
+            </ng-template>
           <ng-template pTemplate="thumbnail" let-item>
               <div class="grid grid-nogutter justify-content-center">
-                  <img [src]="item.thumbnailImageSrc" style="display: block;"/>
+                  <img [src]="item" style="width: 50px; display: block;"/>
               </div>
           </ng-template>
-      </p-galleria>
-      <button pButton type="button" icon="pi pi-external-link" label="Show" (click)="displayBasic2 = true"></button>
-
-
-          <p-image src={{prod.images[0]}} alt="Image" width="50"></p-image>
-          <a class="flex" href={{prod.url}} target="_blank">{{prod.id}}</a>
-          <p class="flex-1 ">{{prod.name}}</p>
+          </p-galleria> -->
+          
         </div>
       }
+    </div>
   </p-tabPanel>
   <p-tabPanel header="Uploaded To Aminda">
       <p>

@@ -18,6 +18,7 @@ export class MatterhornComponent implements OnInit {
   public matProducts:MatterhornProduct[]=[];
   displayBasic2: boolean = false;
   displayCustom: boolean | undefined;
+  galeryImages: string[] =[];
   constructor(
     private readonly matService: MatterhornService,
     
@@ -48,4 +49,8 @@ export class MatterhornComponent implements OnInit {
     this.matProducts.push(newProd);
   }
   
+  onImageClick(index: number){
+    this.galeryImages =[...this.matProducts[index].images]
+    this.displayBasic2=true
+  }
 }
