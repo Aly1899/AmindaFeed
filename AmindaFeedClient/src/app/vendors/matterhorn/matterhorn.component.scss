@@ -1,0 +1,9 @@
+img {
+  border: 1px solid rgb(230, 230, 230);
+  border-radius: 10%;
+  box-shadow: bisque;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  border-bottom: rgb(230, 230, 230);
+}
