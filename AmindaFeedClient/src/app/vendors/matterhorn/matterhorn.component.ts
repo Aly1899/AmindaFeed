@@ -43,8 +43,8 @@ export class MatterhornComponent implements OnInit {
       prod["name"],
       prod["url"],
       prod["images"],
-      Math.round(prod["prices"]["HUF"]),
-      Math.round((prod["prices"]["HUF"] * 2 / 1000) * 1000),
+      Math.round(prod["prices"]["HUF"]) + 3000,
+      Math.round(((prod["prices"]["HUF"] + 3000) * 2 / 1000) * 1000),
     )
     this.matProducts.push(newProd);
   }
