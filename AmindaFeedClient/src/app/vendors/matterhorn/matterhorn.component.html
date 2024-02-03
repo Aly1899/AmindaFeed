@@ -6,6 +6,16 @@
       </div>
     } @else {
       <div class="flex flex-col gap-2">
+        <div class="flex flex-wrap w-full gap-1">
+          @for(category of categories; track category.matterhornId){
+            <p-tag (click)="onCategorySelect(category.matterhornId)" class="category" [style]="{'white-space':'nowrap', 'background': 'linear-gradient(-225deg,#AC32E4 0%,#7918F2 48%,#4801FF 100%)'}">
+              <div class="flex align-items-center gap-2">
+                  <span class="text-base">{{category.matterhornName}}</span>
+              </div>
+          </p-tag>
+          }
+        </div>
+        
         <p-table [value]="matProducts" [(selection)]="selectedProducts" styleClass="p-datatable-striped"
                  [tableStyle]="{'min-width': '60rem'}">
           <ng-template pTemplate="caption">

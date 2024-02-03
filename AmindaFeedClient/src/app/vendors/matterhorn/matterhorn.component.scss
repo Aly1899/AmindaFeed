@@ -7,3 +7,7 @@ img {
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
   border-bottom: rgb(230, 230, 230);
 }
+
+.category {
+  cursor: pointer !important;
+}

@@ -471,5 +471,13 @@ namespace AmindaFeed.Services
             MatterhornProduct matterhornProduct = await GetMatterhornProduct(productID);
             return await MatterhornAmindaMapper(matterhornProduct);
         }
+        private int categoryMapper(string matterhornCategory)
+        {
+            if(ProductConstants.Categories[matterhornCategory] != null)
+            {
+                return ProductConstants.Categories[matterhornCategory];
+            }
+            return ProductConstants.Categories["NotFound"];
+        }
     }
 }

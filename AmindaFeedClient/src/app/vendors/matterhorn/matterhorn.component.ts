@@ -6,14 +6,23 @@ import {GalleriaModule} from 'primeng/galleria';
 import {TableModule} from 'primeng/table';
 import {ButtonModule} from "primeng/button";
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
 
 import {MatterhornService} from './service/matterhorn.service';
 import {MatterhornProduct} from './models/mattterhorn-model';
+import { Category } from './models/category-model';
 
 @Component({
   selector: 'app-matterhorn',
   standalone: true,
-  imports: [TabViewModule, ImageModule, GalleriaModule, TableModule, ButtonModule, ProgressSpinnerModule],
+  imports: [TabViewModule,
+      ImageModule, 
+      GalleriaModule, 
+      TableModule, 
+      ButtonModule, 
+      ProgressSpinnerModule,
+      TagModule,
+  ],
   templateUrl: './matterhorn.component.html',
   styleUrl: './matterhorn.component.scss'
 })
@@ -25,6 +34,17 @@ export class MatterhornComponent implements OnInit {
   selectedProducts!: MatterhornProduct;
   isLoading: boolean = false;
   tabIndex: number = 0;
+  categories:Category[]=[
+   new Category('Sport',357),
+   new Category('Evening Dresses',121),
+   new Category('Formal Dresses, Cocktail Dresses',301),
+   new Category('Day Dresses',42),
+   new Category('Shapewear Bodies for Women',160),
+   new Category('Women`s Tops, T-shirts, Singlets',120),
+   new Category('Undershirts / Tops',66),
+   new Category('Women`s Blouses, Tunics',159),
+   new Category('Shirts for Women',41)
+  ]
 
   constructor(
     private readonly matService: MatterhornService,
@@ -32,7 +52,6 @@ export class MatterhornComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.retreiveDataFromMatterhorn()
     console.log("matProducts", this.matProducts)
   }
 
@@ -54,9 +73,9 @@ export class MatterhornComponent implements OnInit {
     this.displayBasic2 = true
   }
 
-  retreiveDataFromMatterhorn() {
+  retreiveDataFromMatterhorn(id: number) {
     this.isLoading = true;
-    this.matService.getProductByCategory(42)
+    this.matService.getProductByCategory(id)
       .pipe(map((prods: MatterhornProduct[]) => {
         console.log("fullProduct", prods)
         prods.map((prod) => this.createNewMatterhornProduct(prod))
@@ -70,5 +89,9 @@ export class MatterhornComponent implements OnInit {
 
   onAdd() {
     console.log(this.selectedProducts)
+  }
+
+  onCategorySelect(id: number){
+    this.retreiveDataFromMatterhorn(id)
   }
 }
