@@ -37,6 +37,7 @@
               <th>Name</th>
               <th>Purchase Price</th>
               <th>Sales Price</th>
+              <th>Size/Stock</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-matProduct let-rowIndex="rowIndex">
@@ -54,6 +55,17 @@
               <td>{{ matProduct.name }}</td>
               <td>{{ matProduct.purchasePrice }}</td>
               <td>{{ matProduct.salePrice }}</td>
+              <td class="flex items-center">
+                <div class="flex flex-col gap-0 items-center">
+                  @for(variant of matProduct.variants; track variant.variant_uid ){
+                    <div class="flex gap-1 text-xs h-3.5">
+                      <p>{{variant.name}}</p>
+                      <p>:</p>
+                      <p>{{variant.stock}}</p>
+                    </div>
+                  }
+                </div>
+              </td>
 
 
             </tr>
