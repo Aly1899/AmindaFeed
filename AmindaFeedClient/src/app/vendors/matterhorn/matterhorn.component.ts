@@ -11,6 +11,7 @@ import { TagModule } from 'primeng/tag';
 import {MatterhornService} from './service/matterhorn.service';
 import {MatterhornProduct} from './models/mattterhorn-model';
 import { Category } from './models/category-model';
+import { AmindaService } from '../../Services/aminda.service';
 
 @Component({
   selector: 'app-matterhorn',
@@ -27,11 +28,14 @@ import { Category } from './models/category-model';
   styleUrl: './matterhorn.component.scss'
 })
 export class MatterhornComponent implements OnInit {
+onAddSelection() {
+throw new Error('Method not implemented.');
+}
   public matProducts: MatterhornProduct[] = [];
   displayBasic2: boolean = false;
   displayCustom: boolean | undefined;
   galeryImages: string[] = [];
-  selectedProducts!: MatterhornProduct;
+  selectedProducts!: MatterhornProduct[];
   isLoading: boolean = false;
   tabIndex: number = 0;
   categories:Category[]=[
@@ -48,6 +52,7 @@ export class MatterhornComponent implements OnInit {
 
   constructor(
     private readonly matService: MatterhornService,
+    private readonly amindaService: AmindaService
   ) {
   }
 
@@ -89,7 +94,9 @@ export class MatterhornComponent implements OnInit {
   }
 
   onAdd() {
-    console.log(this.selectedProducts)
+    const selectedProductIds = this.selectedProducts.map(prod=>prod.id)
+    this.amindaService.addItemsToSelectedList(selectedProductIds)
+    console.log("selected: ",this.amindaService.selectedItems)
   }
 
   onCategorySelect(id: number){
