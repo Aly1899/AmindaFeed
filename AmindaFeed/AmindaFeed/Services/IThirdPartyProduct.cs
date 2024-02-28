@@ -2,7 +2,7 @@
 {
     public interface IThirdPartyProduct
     {
-        public Task<AmindaProduct> ProductMappedToAminda(string productID);
+        public Task<AmindaProduct> ProductMappedToAminda(int productID);
 
     }
 }

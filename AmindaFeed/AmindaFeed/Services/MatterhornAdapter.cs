@@ -28,7 +28,7 @@ namespace AmindaFeed.Services
             _productRepository = productRepository;
         }
 
-        public async Task<MatterhornProduct> GetMatterhornProduct(string productId)
+        public async Task<MatterhornProduct> GetMatterhornProduct(int productId)
         {
             MatterhornProduct matterhornProduct = new();
 
@@ -56,7 +56,7 @@ namespace AmindaFeed.Services
             return matterhornProduct;
         }
 
-        public async Task<List<MatterhornProduct>> GetMatterhornProducts(List<string> productIds)
+        public async Task<List<MatterhornProduct>> GetMatterhornProducts(List<int> productIds)
         {
             var matterhornProducts = new List<MatterhornProduct>();
 
@@ -102,7 +102,7 @@ namespace AmindaFeed.Services
 
             return result; 
         }
-        public async Task SetAmindaProductFromMatterhorn(string productId)
+        public async Task SetAmindaProductFromMatterhorn(int productId)
         {
             var product = await GetMatterhornProduct(productId);
             var amindaProd = await MatterhornAmindaMapper(product);
@@ -131,7 +131,7 @@ namespace AmindaFeed.Services
                 });
         }
 
-        public void SetAmindaProductsFromMatterhorn(List<string> productIds)
+        public void SetAmindaProductsFromMatterhorn(List<int> productIds)
         {
             productIds.ForEach(async productId =>
             {
@@ -466,14 +466,14 @@ namespace AmindaFeed.Services
             return loginResponse.Token;
         }
 
-        public async Task<AmindaProduct> ProductMappedToAminda(string productID)
+        public async Task<AmindaProduct> ProductMappedToAminda(int productID)
         {
             MatterhornProduct matterhornProduct = await GetMatterhornProduct(productID);
             return await MatterhornAmindaMapper(matterhornProduct);
         }
-        private int categoryMapper(string matterhornCategory)
+        private int CategoryMapper(string matterhornCategory)
         {
-            if(ProductConstants.Categories[matterhornCategory] != null)
+            if(ProductConstants.Categories.ContainsKey(matterhornCategory))
             {
                 return ProductConstants.Categories[matterhornCategory];
             }

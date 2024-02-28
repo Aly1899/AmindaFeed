@@ -5,10 +5,6 @@
         public const double PriceLimitForDeliveryFee = 8000;
         public static Dictionary<string, int> Categories = new()
         {
-            {"Women`s Blouses, Tunics", 743030 },
-            {"Day Dresses", 480084 },
-            {"Formal Dresses, Cocktail Dresses", 978533 },
-            {"Evening Dresses", 321058 },
             {"Sport",750330},
             {"New Years Eve dresses",321058},
             {"Wedding Guest Dresses",978533},

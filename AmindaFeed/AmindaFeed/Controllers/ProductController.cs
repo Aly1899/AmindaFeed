@@ -32,14 +32,14 @@ namespace AmindaFeed.Controllers
         }
 
         [HttpGet("GetMatterhornProduct")]
-        public async Task<MatterhornProduct> GetAmindaProduct(string productId)
+        public async Task<MatterhornProduct> GetAmindaProduct(int productId)
         {
             return await _matterhornAdapter.GetMatterhornProduct(productId);
 
         }
 
         [HttpPut("GetMatterhornProducts")]
-        public async Task<List<MatterhornProduct>> GetAmindaProducts([FromBody] List<string> productIds)
+        public async Task<List<MatterhornProduct>> GetAmindaProducts([FromBody] List<int> productIds)
         {
             return await _matterhornAdapter.GetMatterhornProducts(productIds);
 
@@ -53,13 +53,13 @@ namespace AmindaFeed.Controllers
         }
 
         [HttpPost("SetAmindaProductFromMatterhorn")]
-        public async Task SetAmindaProductFromMatterhorn(string productId)
+        public async Task SetAmindaProductFromMatterhorn(int productId)
         {
             await _matterhornAdapter.SetAmindaProductFromMatterhorn(productId);
         }
 
         [HttpPost("SetAmindaProductsFromMatterhorn")]
-        public void SetAmindaProductsFromMatterhorn([FromBody] List<string> productIds)
+        public void SetAmindaProductsFromMatterhorn([FromBody] List<int> productIds)
         {
             _matterhornAdapter.SetAmindaProductsFromMatterhorn(productIds);
         }

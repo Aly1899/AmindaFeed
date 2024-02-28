@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +9,7 @@ import { Subject } from 'rxjs';
 export class AmindaService {
   public selectedItemsToFeed$ = new Subject<number[]>()
   public selectedItems:number[] =[] 
-  constructor() { }
+  constructor(private httpClient:HttpClient) { }
 
   addItemsToSelectedList(items: number[]){
    this.selectedItems.splice(0,0,...items)
@@ -17,6 +19,10 @@ export class AmindaService {
   removeItemFromSelectedList(item: number){
     const index=this.selectedItems.indexOf(item);
     this.selectedItems.splice(index,1)
+  }
+
+  sendItemsToAminda(items: number[]):Observable<any>{
+    return this.httpClient.post(`${environment.backendUri}/Product/SetAmindaProductsFromMatterhorn`,items)
   }
 
 }

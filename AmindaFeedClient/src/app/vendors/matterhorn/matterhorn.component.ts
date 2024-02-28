@@ -28,6 +28,14 @@ import { AmindaService } from '../../Services/aminda.service';
   styleUrl: './matterhorn.component.scss'
 })
 export class MatterhornComponent implements OnInit {
+onSendtoAminda() {
+  this.isLoading=true;
+  this.amindaService.sendItemsToAminda(this.amindaService.selectedItems)
+  .subscribe({next: (p)=>{
+    this.isLoading=false
+    this.amindaService.selectedItems = [];
+  },error: err=>this.isLoading=false})
+}
 onAddSelection() {
 throw new Error('Method not implemented.');
 }

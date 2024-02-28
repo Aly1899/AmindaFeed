@@ -4,10 +4,10 @@ namespace AmindaFeed.Services
 {
     public interface IMatterhornAdapter
     {
-        Task<MatterhornProduct> GetMatterhornProduct(string productId);
-        Task<List<MatterhornProduct>> GetMatterhornProducts(List<string> productIds);
+        Task<MatterhornProduct> GetMatterhornProduct(int productId);
+        Task<List<MatterhornProduct>> GetMatterhornProducts(List<int> productIds);
         Task<List<MatterhornProduct>> GetMatterhornProductsByCategory(int category);
-        Task SetAmindaProductFromMatterhorn(string productId);
-        void SetAmindaProductsFromMatterhorn(List<string> productIds);
+        Task SetAmindaProductFromMatterhorn(int productId);
+        void SetAmindaProductsFromMatterhorn(List<int> productIds);
     }
 }
