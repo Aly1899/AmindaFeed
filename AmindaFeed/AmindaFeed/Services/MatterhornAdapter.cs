@@ -37,9 +37,6 @@ namespace AmindaFeed.Services
             var endpoint = $"/{productId}";
             var fullUrl = _httpService.CombineUrl(endpoint);
 
-            //var requestMessage = new HttpRequestMessage(HttpMethod.Get, $@"{_configuration.GetValue<string>("Matterhorn:BaseUrl")}/{productId}");
-
-            //var httpResponseMessage = await _httpClient.SendAsync(requestMessage);
             var httpResponseMessage = await _httpClient.GetAsync(fullUrl);
 
             if (httpResponseMessage.IsSuccessStatusCode)
