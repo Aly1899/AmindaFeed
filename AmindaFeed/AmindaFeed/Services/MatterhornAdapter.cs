@@ -15,16 +15,18 @@ namespace AmindaFeed.Services
     public class MatterhornAdapter : IMatterhornAdapter, IThirdPartyProduct
     {
         private readonly IConfiguration _configuration;
+        private readonly IHttpService _httpService;
         private readonly HttpClient _httpClient;
         private readonly IProductRepository<AmindaProductDb> _productRepository;
 
         public MatterhornAdapter(
-            IConfiguration configuration, 
-            HttpClient httpClient,
+            IConfiguration configuration,
+            IHttpService httpService,
             IProductRepository<AmindaProductDb> productRepository)
         {
             _configuration = configuration;
-            _httpClient = httpClient;
+            _httpService = httpService;
+            _httpClient = _httpService.CreateConfiguredHttpClient();
             _productRepository = productRepository;
         }
 
@@ -32,21 +34,13 @@ namespace AmindaFeed.Services
         {
             MatterhornProduct matterhornProduct = new();
 
-            var httpRequestMessage = new HttpRequestMessage(
-                HttpMethod.Get,
-                $@"{_configuration.GetValue<string>("Matterhorn:BaseUrl")}/{productId}")
-            {
-                Headers =
-                    {
-                        { HeaderNames.Accept, "application/json" },
-                        { HeaderNames.Authorization, _configuration.GetValue<string>("Matterhorn:ApiKey") }
-                    }
-            };
+            var endpoint = $"/{productId}";
+            var fullUrl = _httpService.CombineUrl(endpoint);
 
-            _httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
+            //var requestMessage = new HttpRequestMessage(HttpMethod.Get, $@"{_configuration.GetValue<string>("Matterhorn:BaseUrl")}/{productId}");
 
-            var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage);
+            //var httpResponseMessage = await _httpClient.SendAsync(requestMessage);
+            var httpResponseMessage = await _httpClient.GetAsync(fullUrl);
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -98,9 +92,9 @@ namespace AmindaFeed.Services
                 matterhornProducts = new();
             }
 
-            var result = matterhornProducts?.Where(p => p.Variants!= null && p.Variants.Count != 0).ToList();
+            var result = matterhornProducts?.Where(p => p.Variants != null && p.Variants.Count != 0).ToList();
 
-            return result; 
+            return result;
         }
         public async Task SetAmindaProductFromMatterhorn(int productId)
         {
@@ -108,7 +102,7 @@ namespace AmindaFeed.Services
             var amindaProd = await MatterhornAmindaMapper(product);
             var amindaProds = new AmindaProducts()
             {
-                Products=new List<AmindaProduct>() { amindaProd }
+                Products = new List<AmindaProduct>() { amindaProd }
             };
             var url = $"{_configuration.GetValue<string>("Unas:BaseUrl")}/setProduct";
 
@@ -308,7 +302,7 @@ namespace AmindaFeed.Services
             return amindaProd;
         }
 
-        private async Task PersistAmindaProduct (AmindaProduct amindaProduct, double purchasePrice)
+        private async Task PersistAmindaProduct(AmindaProduct amindaProduct, double purchasePrice)
         {
             var amindaProductDb = new AmindaProductDb();
             amindaProductDb.Id = amindaProduct.Sku;
@@ -320,7 +314,7 @@ namespace AmindaFeed.Services
 
             foreach (var variant in amindaProduct.Stocks.Stock)
             {
-                if (variant.Qty<3) amindaProductDb.IsOutOfStock = true;
+                if (variant.Qty < 3) amindaProductDb.IsOutOfStock = true;
             }
 
             await _productRepository.CreateAsync(amindaProductDb);
@@ -422,7 +416,7 @@ namespace AmindaFeed.Services
 
             x.Serialize(xmlWriter, login);
 
-            Console.WriteLine("----Token-----: ",output);
+            Console.WriteLine("----Token-----: ", output);
 
             var loginUrl = $"{_configuration.GetValue<string>("Unas:BaseUrl")}/login";
 
@@ -473,7 +467,7 @@ namespace AmindaFeed.Services
         }
         private int CategoryMapper(string matterhornCategory)
         {
-            if(ProductConstants.Categories.ContainsKey(matterhornCategory))
+            if (ProductConstants.Categories.ContainsKey(matterhornCategory))
             {
                 return ProductConstants.Categories[matterhornCategory];
             }

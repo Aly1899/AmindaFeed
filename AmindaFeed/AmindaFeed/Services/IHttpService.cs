@@ -1,12 +1,8 @@
-﻿using AmindaFeed.Models;
-
-namespace AmindaFeed.Services
+﻿namespace AmindaFeed.Services
 {
     public interface IHttpService
     {
-        Task<MatterhornProduct> GetMatterhornProduct(string productId);
-        Task<List<MatterhornProduct>> GetMatterhornProducts(List<string> productIds);
-        Task SetAmindaProductFromMatterhorn(string productId);
-        void SetAmindaProductsFromMatterhorn(List<string> productIds);
+        public HttpClient CreateConfiguredHttpClient();
+        public string CombineUrl(string endpoint);
     }
 }
