@@ -59,9 +59,9 @@ namespace AmindaFeed.Controllers
         }
 
         [HttpPost("SetAmindaProductsFromMatterhorn")]
-        public void SetAmindaProductsFromMatterhorn([FromBody] List<int> productIds)
+        public async Task SetAmindaProductsFromMatterhorn([FromBody] List<int> productIds)
         {
-            _matterhornAdapter.SetAmindaProductsFromMatterhorn(productIds);
+            await _matterhornAdapter.SetAmindaProductsFromMatterhorn(productIds);
         }
 
         [HttpGet("GetAllAmindaProducts")]

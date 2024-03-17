@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AmindaFeed.Repository
 {
-    public class ProductRepository<T> : IProductRepository<T> where T : class
+    public class ProductRepository<T> :IDisposable, IProductRepository<T> where T : class
     {
         private readonly AppDbContext _dbContext;
         private DbSet<T> _dbSet;
+        private bool disposed = false;
 
         public ProductRepository(AppDbContext dbContext)
         {
@@ -16,7 +17,6 @@ namespace AmindaFeed.Repository
         public async Task<T> CreateAsync(T product)
         {
             _dbSet.Add(product);
-            await _dbContext.SaveChangesAsync();
             return product;
 
         }
@@ -39,6 +39,29 @@ namespace AmindaFeed.Repository
         public Task UpdateAsync(T entity)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task Save()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _dbContext.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

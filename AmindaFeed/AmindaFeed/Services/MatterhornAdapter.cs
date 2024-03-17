@@ -120,14 +120,15 @@ namespace AmindaFeed.Services
                 {
                     Console.WriteLine("Response AmindaProd : {0}", responseTask.Result);
                 });
+            await PersistAmindaProduct(amindaProd, product.Prices["HUF"]);
+
         }
 
-        public void SetAmindaProductsFromMatterhorn(List<int> productIds)
+        public async Task SetAmindaProductsFromMatterhorn(List<int> productIds)
         {
-            productIds.ForEach(async productId =>
-            {
-                await SetAmindaProductFromMatterhorn(productId);
-            });
+            var tasks = productIds.Select(productId => SetAmindaProductFromMatterhorn(productId));
+            await Task.WhenAll(tasks);
+            await _productRepository.Save();
         }
 
         private async Task<AmindaProduct> MatterhornAmindaMapper(MatterhornProduct matterhornProduct)
@@ -295,7 +296,7 @@ namespace AmindaFeed.Services
                 }
             };
             Console.WriteLine(amindaProd);
-            await PersistAmindaProduct(amindaProd, matterhornProduct.Prices["HUF"]);
+            
             return amindaProd;
         }
 
